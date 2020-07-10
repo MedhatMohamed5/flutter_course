@@ -97,7 +97,7 @@ class _WhatsNewState extends State<WhatsNew> {
                   child: _sectionTitle('Recent updates'),
                 ),
                 _drawRecentUpdatesCard(Colors.deepOrange),
-                _drawRecentUpdatesCard(Colors.tealAccent),
+                _drawRecentUpdatesCard(Colors.teal),
                 SizedBox(
                   height: 32,
                 ),
