@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/api/author_api.dart';
 import 'package:flutter_course/screens/home_tabs/favourites.dart';
 import 'package:flutter_course/screens/home_tabs/popular.dart';
 import 'package:flutter_course/screens/home_tabs/whats_new.dart';
@@ -14,6 +15,7 @@ enum PopMenu { HELP, ABOUT, CONTACT, SETTINGS }
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
+  AuthorAPI _authorAPI = AuthorAPI();
 
   @override
   void initState() {
@@ -24,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    _authorAPI.fetchAllAuthors();
     return Scaffold(
       appBar: AppBar(
         title: Text("Explore"),
@@ -37,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icon(Icons.more_vert),
             onPressed: () {},
           ),*/
-          _popMenu(),
+          _popMenu(context),
         ],
         bottom: TabBar(
           unselectedLabelColor: Colors.white70,
@@ -70,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _popMenu() {
+  Widget _popMenu(BuildContext context) {
     return PopupMenuButton<PopMenu>(
       itemBuilder: (context) {
         return [
