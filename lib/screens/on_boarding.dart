@@ -12,7 +12,8 @@ class OnBoarding extends StatefulWidget {
 
 class _OnBoardingState extends State<OnBoarding> {
   List<PageModel> pages;
-  int _index = 0;
+
+  //int _index = 0;
   ValueNotifier<int> _pageViewerNotifier = ValueNotifier(0);
 
   _addPages() {
@@ -129,7 +130,6 @@ class _OnBoardingState extends State<OnBoarding> {
                       context,
                       MaterialPageRoute(
                         builder: (context) {
-                          // TODO: Update Seen
                           _updateSeen();
                           return HomeScreen();
                         },
@@ -157,7 +157,7 @@ class _OnBoardingState extends State<OnBoarding> {
     prefs.setBool('seen', true);
   }
 
-  List<Widget> _drawIndicator(int index) {
+  /*List<Widget> _drawIndicator(int index) {
     //print(index);
     //print(pages.length);
     List<Widget> widgets = List<Widget>();
@@ -178,7 +178,7 @@ class _OnBoardingState extends State<OnBoarding> {
         color: _color,
       ),
     );
-  }
+  }*/
 
   Widget _displayPageIndicator(int length) {
     return PageViewIndicator(

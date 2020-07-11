@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/api/posts_api.dart';
+import 'package:flutter_course/models/post.dart';
+import 'package:flutter_course/utilities/data_utilities.dart';
 
 class Popular extends StatefulWidget {
   @override
@@ -6,27 +9,57 @@ class Popular extends StatefulWidget {
 }
 
 class _PopularState extends State<Popular> {
+  PostsAPI _postsAPI = PostsAPI();
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return FutureBuilder(
+        future: _postsAPI.fetchPostsByType("3"),
+        // ignore: missing_return
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return connectionError();
+              break;
+            case ConnectionState.waiting:
+              return loading();
+              break;
+            case ConnectionState.active:
+              return loading();
+              break;
+            case ConnectionState.done:
+              if (snapshot.hasError) {
+                return error(snapshot.error);
+              } else {
+                if (snapshot.hasData) {
+                  List<Post> posts = snapshot.data;
 
-      itemBuilder: (context, index) {
-        return Card(
-          child: _drawSingleRow(),
-        );
-      },
-      itemCount: 20,
-    );
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: _drawSingleRow(posts[index]),
+                      );
+                    },
+                    itemCount: posts.length,
+                  );
+                } else {
+                  return noData();
+                }
+              }
+              break;
+          }
+        });
   }
 
-  Widget _drawSingleRow() {
+  Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: <Widget>[
           SizedBox(
             child: Image(
-              image: ExactAssetImage('assets/images/placeholder_bg.png'),
+              image: NetworkImage(post.featuredImage),
+              //ExactAssetImage('assets/images/placeholder_bg.png'),
               fit: BoxFit.cover,
             ),
             height: 128,
@@ -40,7 +73,7 @@ class _PopularState extends State<Popular> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  'The world global warming annual summit',
+                  post.title, //'The world global warming annual summit',
                   maxLines: 2,
                   style: TextStyle(
                     fontSize: 18,
@@ -57,7 +90,9 @@ class _PopularState extends State<Popular> {
                     Row(
                       children: <Widget>[
                         Icon(Icons.timer),
-                        Text('15 min'),
+                        Text(
+                          parseDate(post.dateWritten),
+                        ),
                       ],
                     ),
                   ],
