@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/models/nav_menu.dart';
+import 'package:flutter_course/screens/headline_news.dart';
+import 'package:flutter_course/screens/home_screen.dart';
+import 'package:flutter_course/screens/twitter_feeds.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -6,7 +10,7 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
-  List<String> navMenu = [
+  /*List<String> navMenu = [
     'Explore',
     'Headline news',
     'Read later',
@@ -14,6 +18,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     'Photos',
     'Settings',
     'Logout'
+  ];*/
+
+  List<NavMenuItem> navigationMenu = [
+    NavMenuItem('Explore', () => HomeScreen()),
+    NavMenuItem('Headline news', () => HeadLineNews()),
+    NavMenuItem('Tweeter Feeds', () => TwitterFeeds()),
   ];
 
   @override
@@ -26,9 +36,17 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: ListTile(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => navigationMenu[index].destination(),
+                    ),
+                  );
+                },
                 title: Text(
-                  navMenu[index].trim().toUpperCase(),
+                  navigationMenu[index].title.trim().toUpperCase(),
                   style: TextStyle(
                     color: Colors.grey.shade700,
                     fontSize: 22,
@@ -41,7 +59,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               ),
             );
           },
-          itemCount: navMenu.length,
+          itemCount: navigationMenu.length,
         ),
       ),
     );
