@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_course/api/posts_api.dart';
 import 'package:flutter_course/models/post.dart';
+import 'package:flutter_course/screens/post_page.dart';
 import 'package:flutter_course/utilities/data_utilities.dart';
 
 class WhatsNew extends StatefulWidget {
@@ -33,39 +34,85 @@ class _WhatsNewState extends State<WhatsNew> {
       color: Colors.white,
       fontSize: 16,
     );
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.25,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Free Text',
-                style: _headerTitle,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                'Lorem ipsum is placeholder text commonly used in the graphic, '
-                'print, and publishing industries for previewing layouts and visual mockups',
-                style: _headerDesc,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: ExactAssetImage('assets/images/placeholder_bg.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
+
+    return FutureBuilder(
+      future: _postsAPI.fetchPostsByType("1"),
+      // ignore: missing_return
+      builder: (context, snapShot) {
+        switch (snapShot.connectionState) {
+          case ConnectionState.none:
+            return connectionError();
+            break;
+          case ConnectionState.waiting:
+            return loading();
+            break;
+          case ConnectionState.active:
+            return loading();
+            break;
+          case ConnectionState.done:
+            if (snapShot.hasError) {
+              return error(snapShot.error);
+            } else {
+              if (snapShot.hasData) {
+                List<Post> posts = snapShot.data;
+                Random random = Random();
+                int randomIndex = random.nextInt(posts.length);
+                Post post = posts[randomIndex];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PostPage(post),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              post.title, //'Free Text',
+                              style: _headerTitle,
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              /*'Lorem ipsum is placeholder text commonly used in the graphic, '
+                    'print, and publishing industries for previewing layouts and visual mockups',*/
+                              post.content,
+                              style: _headerDesc,
+                              textAlign: TextAlign.center,
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(post.featuredImage),
+                        //ExactAssetImage('assets/images/placeholder_bg.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return noData();
+              }
+            }
+            break;
+        }
+      },
     );
   }
 
@@ -97,7 +144,6 @@ class _WhatsNewState extends State<WhatsNew> {
                       break;
                     case ConnectionState.done:
                       if (snapshot.error != null) {
-
                         return error(snapshot.error);
                       } else {
                         if (snapshot.hasData) {
@@ -207,57 +253,67 @@ class _WhatsNewState extends State<WhatsNew> {
   }
 
   Widget _drawSingleRow(Post post) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            child: //Image(
-                //image: ExactAssetImage('assets/images/placeholder_bg.png'),
-                Image.network(
-              post.featuredImage,
-              fit: BoxFit.cover,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PostPage(post),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            SizedBox(
+              child: //Image(
+                  //image: ExactAssetImage('assets/images/placeholder_bg.png'),
+                  Image.network(
+                post.featuredImage,
+                fit: BoxFit.cover,
+              ),
+              //fit: BoxFit.cover,
+              //),
+              height: 128,
+              width: 128,
             ),
-            //fit: BoxFit.cover,
-            //),
-            height: 128,
-            width: 128,
-          ),
-          SizedBox(
-            width: 16,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'The world global warming annual summit',
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 24,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Medhat Mohamed'),
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.timer),
-                        //Text('15 min'),
-                        Text(parseDate(post.dateWritten)),
-                      ],
+            SizedBox(
+              width: 16,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'The world global warming annual summit',
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Medhat Mohamed'),
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.timer),
+                          //Text('15 min'),
+                          Text(parseDate(post.dateWritten)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -282,67 +338,77 @@ class _WhatsNewState extends State<WhatsNew> {
 
   Widget _drawRecentUpdatesCard(Color color, Post post) {
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(post.featuredImage),
-                //ExactAssetImage('assets/images/placeholder_bg.png'),
-                fit: BoxFit.cover,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PostPage(post),
+            ),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(post.featuredImage),
+                  //ExactAssetImage('assets/images/placeholder_bg.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * .25,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: color,
+                ),
+                child: Text(
+                  'sport'.toUpperCase(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    letterSpacing: 2,
+                  ),
+                ),
               ),
             ),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * .25,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: color,
-              ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 8, left: 16, right: 16),
               child: Text(
-                'sport'.toUpperCase(),
+                post.title, //'Sports title for sport news',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                  letterSpacing: 2,
+                  fontSize: 18,
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 8, left: 16, right: 16),
-            child: Text(
-              post.title, //'Sports title for sport news',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.timer,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    parseDate(post.dateWritten), //'15 mins',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Row(
-              children: <Widget>[
-                Icon(
-                  Icons.timer,
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  parseDate(post.dateWritten), //'15 mins',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

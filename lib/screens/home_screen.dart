@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/screens/about.dart';
+import 'package:flutter_course/screens/contact.dart';
+import 'package:flutter_course/screens/help.dart';
 import 'package:flutter_course/screens/home_tabs/favourites.dart';
 import 'package:flutter_course/screens/home_tabs/popular.dart';
 import 'package:flutter_course/screens/home_tabs/whats_new.dart';
+import 'package:flutter_course/screens/settings.dart';
 import 'package:flutter_course/shared_ui/navigation_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -91,7 +95,24 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ];
       },
-      onSelected: (PopMenu menu) {},
+      onSelected: (PopMenu menu) {
+        MaterialPageRoute route;
+        switch (menu) {
+          case PopMenu.HELP:
+            route = MaterialPageRoute(builder: (context) => Help());
+            break;
+          case PopMenu.ABOUT:
+            route = MaterialPageRoute(builder: (context) => AboutUs());
+            break;
+          case PopMenu.CONTACT:
+            route = MaterialPageRoute(builder: (context) => ContactUs());
+            break;
+          case PopMenu.SETTINGS:
+            route = MaterialPageRoute(builder: (context) => Settings());
+            break;
+        }
+        Navigator.push(context, route);
+      },
       icon: Icon(Icons.more_vert),
     );
   }
