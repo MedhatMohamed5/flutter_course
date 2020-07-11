@@ -9,6 +9,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+enum PopMenu { HELP, ABOUT, CONTACT, SETTINGS }
+
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
@@ -31,10 +33,11 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icon(Icons.search),
             onPressed: () {},
           ),
-          IconButton(
+          /*IconButton(
             icon: Icon(Icons.more_vert),
             onPressed: () {},
-          ),
+          ),*/
+          _popMenu(),
         ],
         bottom: TabBar(
           unselectedLabelColor: Colors.white70,
@@ -64,6 +67,33 @@ class _HomeScreenState extends State<HomeScreen>
           controller: _tabController,
         ),
       ),
+    );
+  }
+
+  Widget _popMenu() {
+    return PopupMenuButton<PopMenu>(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<PopMenu>(
+            value: PopMenu.ABOUT,
+            child: Text('About'),
+          ),
+          PopupMenuItem<PopMenu>(
+            value: PopMenu.CONTACT,
+            child: Text('Contact'),
+          ),
+          PopupMenuItem<PopMenu>(
+            value: PopMenu.HELP,
+            child: Text('Help'),
+          ),
+          PopupMenuItem<PopMenu>(
+            value: PopMenu.SETTINGS,
+            child: Text('Settings'),
+          ),
+        ];
+      },
+      onSelected: (PopMenu menu) {},
+      icon: Icon(Icons.more_vert),
     );
   }
 }

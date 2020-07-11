@@ -24,22 +24,20 @@ class _TwitterFeedsState extends State<TwitterFeeds> {
         ],
       ),
       drawer: NavigationDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            return Card(
-              child: Column(
-                children: <Widget>[
-                  _cardHeader(),
-                  _cardBody(),
-                  _cardFooter(),
-                ],
-              ),
-            );
-          },
-          itemCount: 20,
-        ),
+      body: ListView.builder(
+        padding: EdgeInsets.all(8),
+        itemBuilder: (context, index) {
+          return Card(
+            child: Column(
+              children: <Widget>[
+                _cardHeader(),
+                _cardBody(),
+                _cardFooter(),
+              ],
+            ),
+          );
+        },
+        itemCount: 20,
       ),
     );
   }
@@ -99,7 +97,7 @@ class _TwitterFeedsState extends State<TwitterFeeds> {
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -109,7 +107,11 @@ class _TwitterFeedsState extends State<TwitterFeeds> {
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Text(
         'This is the tweet text retrieved from api about sports topics or other news',
-        style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.grey.shade600,
+          height: 1.4,
+        ),
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
       ),
