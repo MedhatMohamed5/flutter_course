@@ -5,3 +5,4 @@ const String post_category = '/api/posts/categories/';
 const String whats_new = '/api/posts/categories/1';
 const String recent_update = '/api/posts/categories/2';
 const String popular_posts = '/api/posts/categories/3';
+const String authentication = '/api/token';

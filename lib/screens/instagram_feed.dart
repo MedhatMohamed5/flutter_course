@@ -11,6 +11,8 @@ class _InstagramFeedState extends State<InstagramFeed> {
     color: Colors.deepOrange,
   );
 
+  List<int> ids = [2, 5, 7, 8];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +36,7 @@ class _InstagramFeedState extends State<InstagramFeed> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _drawHeader(),
+                _drawHeader(index),
                 _drawTitle(),
                 _drawHashTags(),
                 _drawBody(),
@@ -48,7 +50,7 @@ class _InstagramFeedState extends State<InstagramFeed> {
     );
   }
 
-  Widget _drawHeader() {
+  Widget _drawHeader(int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -92,10 +94,18 @@ class _InstagramFeedState extends State<InstagramFeed> {
             children: <Widget>[
               IconButton(
                 icon: Icon(
-                  Icons.favorite_border,
-                  color: Colors.grey,
+                  ids.contains(index) ? Icons.favorite : Icons.favorite_border,
+                  color: ids.contains(index) ? Colors.red : Colors.grey,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if (ids.contains(index)) {
+                    ids.remove(index);
+                  } else {
+                    ids.add(index);
+                  }
+                  setState(() {});
+                  print(ids);
+                },
               ),
               Transform.translate(
                 offset: Offset(-8, 0),

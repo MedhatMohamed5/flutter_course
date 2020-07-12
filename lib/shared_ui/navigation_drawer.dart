@@ -4,6 +4,7 @@ import 'package:flutter_course/screens/facebook_feeds.dart';
 import 'package:flutter_course/screens/headline_news.dart';
 import 'package:flutter_course/screens/home_screen.dart';
 import 'package:flutter_course/screens/instagram_feed.dart';
+import 'package:flutter_course/screens/login.dart';
 import 'package:flutter_course/screens/twitter_feeds.dart';
 
 class NavigationDrawer extends StatefulWidget {
@@ -28,6 +29,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     NavMenuItem('Tweeter Feeds', () => TwitterFeeds()),
     NavMenuItem('Instagram Feeds', () => InstagramFeed()),
     NavMenuItem('Facebook Feeds', () => FacebookFeeds()),
+    NavMenuItem('Login', () => LoginScreen()),
   ];
 
   @override
