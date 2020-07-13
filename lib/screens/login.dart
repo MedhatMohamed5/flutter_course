@@ -77,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  keyboardType: TextInputType.emailAddress,
                   controller: _emailController,
                   decoration: InputDecoration(labelText: 'Email'),
                   validator: (value) {
@@ -88,6 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 16,
                 ),
                 TextFormField(
+                  obscureText: true,
                   controller: _passwordController,
                   decoration: InputDecoration(labelText: 'Password'),
                   validator: (value) {

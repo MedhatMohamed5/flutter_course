@@ -5,15 +5,17 @@ import 'package:flutter_course/screens/help.dart';
 import 'package:flutter_course/screens/home_tabs/favourites.dart';
 import 'package:flutter_course/screens/home_tabs/popular.dart';
 import 'package:flutter_course/screens/home_tabs/whats_new.dart';
+import 'package:flutter_course/screens/login.dart';
 import 'package:flutter_course/screens/settings.dart';
 import 'package:flutter_course/shared_ui/navigation_drawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-enum PopMenu { HELP, ABOUT, CONTACT, SETTINGS }
+enum PopMenu { HELP, ABOUT, CONTACT, SETTINGS, LOGOUT }
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
@@ -93,6 +95,10 @@ class _HomeScreenState extends State<HomeScreen>
             value: PopMenu.SETTINGS,
             child: Text('Settings'),
           ),
+          PopupMenuItem<PopMenu>(
+            value: PopMenu.LOGOUT,
+            child: Text('Logout'),
+          ),
         ];
       },
       onSelected: (PopMenu menu) {
@@ -110,10 +116,24 @@ class _HomeScreenState extends State<HomeScreen>
           case PopMenu.SETTINGS:
             route = MaterialPageRoute(builder: (context) => Settings());
             break;
+          case PopMenu.LOGOUT:
+            _logout();
+            route = MaterialPageRoute(builder: (context) => LoginScreen());
+            Navigator.pushReplacement(context, route);
+            return;
+            break;
         }
         Navigator.push(context, route);
       },
       icon: Icon(Icons.more_vert),
     );
+  }
+
+  _logout() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    if (preferences != null) {
+      preferences.remove("token");
+    }
+    print("preferences :: ${preferences.getString('Token')}");
   }
 }
